@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Test",
+    "href": "/Test",
+    "icon": "folder",
+    "children": [
+      {
+        "name": "go",
+        "href": "/Test/go",
+        "icon": "file"
+      }
+    ]
+  },
+  {
+    "name": "grrr",
+    "href": "/grrr",
+    "icon": "folder",
+    "children": []
+  }
+]
