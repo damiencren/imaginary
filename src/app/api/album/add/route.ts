@@ -1,37 +1,19 @@
-import { TreeItemData } from '@/app/types/imageData';
-import fs from 'fs';
+import axios from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
 
 export async function POST(request: NextRequest) {
-  const filePath = path.join(process.cwd(),'src','app' ,'data', 'treeData.json');
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const { albumName, collectionName } = await request.json();
 
-  const jsonData: TreeItemData[] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  const url = `https://${apiKey}:${apiSecret}@api.cloudinary.com/v1_1/${cloudName}/folders/${collectionName}/${albumName}`;
 
-  const { newAlbum, clickedCollection } = await request.json();
-
-  const collection = jsonData.find(item => item.name === clickedCollection);
-  if (!collection) {
-    return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
+  try {
+    const response = await axios.post(url);
+    return NextResponse.json(response.data);
+  } catch (error) {
+    console.error('Error adding album:', error);
+    return NextResponse.json({error: 'Error adding the album'});
   }
-
-  const nameExists = collection.children?.some(child => child.name === newAlbum.name);
-  if (nameExists) {
-    return NextResponse.json({ error: 'Name already exists in the collection' }, { status: 400 });
-  }
-
-  const newItem: TreeItemData = {
-    name: newAlbum.name,
-    href: `/${clickedCollection}/${newAlbum.name}`,
-    icon: 'file',
-  };
-
-  if (!collection.children) {
-    collection.children = [];
-  }
-  collection.children.push(newItem);
-  
-  fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
-
-  return NextResponse.json(jsonData);
 }

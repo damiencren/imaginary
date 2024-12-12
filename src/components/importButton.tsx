@@ -4,14 +4,15 @@ import React from 'react'
 import { Button } from './ui/button'
 import { Upload } from 'lucide-react'
 
-const ImportButton = () => {
+const ImportButton = ({ uploadPath }: { uploadPath: string }) => {
   return (
     <div className="flex items-center">
       <Button asChild>
-        <div>
-          <Upload size={16}/>
-          <CldUploadButton uploadPreset="dlzdpbuu"/>
-        </div>
+        <CldUploadButton uploadPreset="upload_preset"
+          options={{ folder: uploadPath }}>
+            Upload
+          <Upload size={16} />
+        </CldUploadButton>
       </Button>
     </div>
   )

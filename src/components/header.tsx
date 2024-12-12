@@ -10,27 +10,28 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import Link from "next/link";
+
+function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 const Header = () => {
     const pathname = usePathname();
-    const [collection_name, album_name] = pathname.split('/').filter(Boolean);
-    console.log(collection_name, album_name);
+    const [collection_name, album_name] = pathname.split('/').filter(Boolean).map(decodeURIComponent);
+
     return (
         <div className="flex-none px-6 py-4 flex gap-5 items-center border-b">
             <SidebarTrigger className="size-lg" />
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        {/* <Link > */}
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        {/* </Link> */}
+                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     {collection_name && (
                         <>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink>{collection_name}</BreadcrumbLink>
+                                <BreadcrumbLink href={`/${collection_name}`}>{capitalizeFirstLetter(collection_name)}</BreadcrumbLink>
                             </BreadcrumbItem>
                         </>
                     )}
@@ -38,14 +39,17 @@ const Header = () => {
                         <>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbPage>{album_name}</BreadcrumbPage>
+                                <BreadcrumbPage>{capitalizeFirstLetter(album_name)}</BreadcrumbPage>
                             </BreadcrumbItem>
                         </>
 
                     )}
-
                 </BreadcrumbList>
             </Breadcrumb>
+            <Avatar className="ml-auto">
+                <AvatarImage src="https://www.gravatar.com/avatar/" />
+                <AvatarFallback></AvatarFallback>
+            </Avatar>
         </div>
     )
 }
