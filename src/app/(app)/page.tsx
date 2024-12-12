@@ -8,7 +8,6 @@ import Image from 'next/image';
 export default async function Home() {
 
   const folders = await cloudinary.api.sub_folders('');
-  console.log(folders);
 
   return (
     <div className="flex flex-col flex-1 gap-4">
