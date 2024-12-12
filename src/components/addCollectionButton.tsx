@@ -1,26 +1,24 @@
+'use client'
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Plus } from "lucide-react";
-import { TreeItemData } from "@/app/types/imageData";
-import { SidebarMenuAction } from "./ui/sidebar";
 
-const AddAlbumDialog = ({ clickedCollection }: { clickedCollection: string }) => {
+const AddCollectionButton = ({ className}: { className?: string }) => {
     const [error, setError] = useState("");
-    const [albumName, setAlbumName] = useState("");
-    const [isAlbumDialogOpen, setIsAlbumDialogOpen] = useState(false);
+    const [collectionNameState, setCollectionNameState] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-
-    const addAlbum = async (newAlbum: TreeItemData, clickedCollection: string) => {
+    const addCollection = async (collectionName: string) => {
         try {
-            const response = await fetch('/api/album/add', {
+            const response = await fetch('/api/collection/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ newAlbum, clickedCollection }),
+                body: JSON.stringify({ collectionName:collectionName }),
             });
             if (!response.ok) {
                 throw new Error();
@@ -32,45 +30,47 @@ const AddAlbumDialog = ({ clickedCollection }: { clickedCollection: string }) =>
         }
     };
 
-    const handleSubmitAlbum = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmitCollection = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (albumName) {
-            addAlbum({ name: albumName }, clickedCollection)
+        if (collectionNameState) {
+            addCollection(collectionNameState)
                 .then((error) => {
                     if (error) {
                         setError(error);
                     } else {
                         setError('');
-                        setIsAlbumDialogOpen(false);
+                        setIsDialogOpen(false);
                     }
                 });
         }
     };
 
     return (
-        <Dialog open={isAlbumDialogOpen} onOpenChange={setIsAlbumDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <SidebarMenuAction>
-                    <Plus />
-                </SidebarMenuAction>
+                <Button variant={"outline"} className={className}>
+                    <Plus/>
+                    <span>Add a collection</span>
+                </Button>
             </DialogTrigger>
-            <DialogContent onClick={(event) => { event.stopPropagation(); }}>
+            <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{`New Album into ${clickedCollection}`}</DialogTitle>
+                    <DialogTitle>{"New Collection"}</DialogTitle>
                     <DialogDescription>{"Choose a name that hasn't been used yet."}</DialogDescription>
                 </DialogHeader>
                 <Label>Name</Label>
-                <Input id="name" name="name" type="text" placeholder="Type the name here..." value={albumName} onChange={(e) => setAlbumName(e.target.value)} required />
+                <Input id="name" name="name" type="text" placeholder="Type the name here..." value={collectionNameState} onChange={(e) => setCollectionNameState(e.target.value)} required />
                 {error && <p className="text-sm text-destructive">{error}</p>}
-                <form onSubmit={handleSubmitAlbum}>
+                <form onSubmit={handleSubmitCollection}>
                     <DialogFooter>
                         <Button type="submit">Create</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>
+
     )
 }
 
-export default AddAlbumDialog;
+export default AddCollectionButton;

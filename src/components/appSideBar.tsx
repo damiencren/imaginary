@@ -16,24 +16,22 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import AddCollectionDialog from "./addCollectionDialog";
+import AddCollectionDialog from "./addCollectionButton";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import { Calendar, ChevronDown, Plus } from "lucide-react";
+import { BadgeInfo, BookUser, Calendar, Camera, ChevronDown, ChevronUp, Folder, Heading, Home, HomeIcon, Info, Paperclip, PersonStanding, PersonStandingIcon, Plus, Presentation, User, User2, UserCheck, UserCircle } from "lucide-react";
 import { TreeItemData } from "@/app/types/imageData";
 import { useEffect, useState } from "react";
-import AddAlbumDialog from "./addAlbumDialog";
 import Link from "next/link";
+import axios from 'axios';
+import Image from "next/image";
+import AddAlbumMenuAction from "./addAlbumMenuAction";
 
 const AppSideBar = () => {
     const [data, setData] = useState<TreeItemData[]>([]);
 
     const fetchData = () => {
-        fetch('/api/tree/get', { method: 'GET' })
-            .then(res => res.json())
-            .then(data => setData(data))
+        axios.get('/api/tree/get')
+            .then(response => setData(response.data))
             .catch(error => console.error('Error fetching tree data:', error));
     };
 
@@ -42,13 +40,53 @@ const AppSideBar = () => {
     }, []);
     return (
         <Sidebar>
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem className="flex gap-2 items-center p-2">
+                        <Link href="/">
+                            <Image src="/imaginary.png" alt="logo" width={200} height={200} />
+                        </Link>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Picora</SidebarGroupLabel>
+                    <SidebarGroupLabel>Pages</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <AddCollectionDialog />
+                                <SidebarMenuButton asChild>
+                                    <Link href="/">
+                                        <HomeIcon />
+                                        <span>Home</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/equipment">
+                                        <Camera />
+                                        <span>Equipment</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/about">
+                                        <BookUser />
+                                        <span>About me</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Collections</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <AddCollectionDialog className="w-full h-8 justify-start rounded-lg" />
                             </SidebarMenuItem>
 
                             {data.map((item: TreeItemData) => (
@@ -56,7 +94,7 @@ const AppSideBar = () => {
                                     <SidebarMenuItem>
                                         <CollapsibleTrigger asChild>
                                             <SidebarMenuButton>
-                                                <Calendar />
+                                                <Folder />
                                                 <span>{item.name}</span>
                                                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                                             </SidebarMenuButton>
@@ -78,13 +116,14 @@ const AppSideBar = () => {
                                                 ))}
                                             </SidebarMenuSub>
                                         </CollapsibleContent>
-                                        <AddAlbumDialog clickedCollection={item.name} />
+                                        <AddAlbumMenuAction collection_name={item.name} />
                                     </SidebarMenuItem>
                                 </Collapsible>
                             ))}
 
                         </SidebarMenu>
                     </SidebarGroupContent>
+
                 </SidebarGroup>
             </SidebarContent>
         </Sidebar>
