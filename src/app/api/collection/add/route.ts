@@ -1,30 +1,37 @@
-import { TreeItemData } from '@/app/types/imageData';
-import fs from 'fs';
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
+import axios from 'axios'; // Added import for axios
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
 
 export async function POST(request: NextRequest) {
-  const filePath = path.join(process.cwd(),'src','app' ,'data', 'treeData.json');
 
-  const jsonData: TreeItemData[] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const { collectionName } = await request.json();
 
-  const {name} = await request.json();
+  const session = await getServerSession(authOptions);
 
-  const nameExists = jsonData.some(item => item.name === name);
-  if (nameExists) {
-    return NextResponse.json({ error: 'ID already exists' }, { status: 400 });
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const newItem: TreeItemData = {
-    name,
-    href: `/${name}`,
-    icon: 'folder',
-    children: []
-  };
 
-  jsonData.push(newItem);
-  
-  fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8');
+  const url = `https://${apiKey}:${apiSecret}@api.cloudinary.com/v1_1/${cloudName}/folders/${collectionName}`;
 
-  return NextResponse.json(jsonData);
+  try {
+
+    const response = await axios.post(url);
+
+    console.log('Folder created:', response.data);
+
+    return NextResponse.json(response.data);
+
+  } catch (error: any) {
+
+    console.error('Error creating folder:', error);
+
+    return NextResponse.json({ success: false, error: error.message });
+
+  }
 }
