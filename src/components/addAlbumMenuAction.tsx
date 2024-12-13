@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { SidebarMenuAction } from "./ui/sidebar";
 import { addAlbum } from "@/lib/album";
 
-const AddAlbumMenuAction = ({ collection_name }: { collection_name: string }) => {
+const AddAlbumMenuAction = ({ collectionName: collectionName }: { collectionName: string }) => {
     const [error, setError] = useState("");
     const [albumName, setAlbumName] = useState("");
     const [isAlbumDialogOpen, setIsAlbumDialogOpen] = useState(false);
@@ -16,9 +16,11 @@ const AddAlbumMenuAction = ({ collection_name }: { collection_name: string }) =>
         event.preventDefault();
 
         if (albumName) {
-            const result = await addAlbum(collection_name, albumName);
+            const result = await addAlbum(albumName, collectionName);
             if (!result.success) {
                 setError('Failed to add the album. Try another name');
+            }  else {
+                setIsAlbumDialogOpen(false);
             }
         }
     };
@@ -32,7 +34,7 @@ return (
         </DialogTrigger>
         <DialogContent onClick={(event) => { event.stopPropagation(); }}>
             <DialogHeader>
-                <DialogTitle>{`New Album into ${collection_name}`}</DialogTitle>
+                <DialogTitle>{`New Album into ${collectionName}`}</DialogTitle>
                 <DialogDescription>{"Choose a name that hasn't been used yet."}</DialogDescription>
             </DialogHeader>
             <Label>Name</Label>

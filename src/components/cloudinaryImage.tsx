@@ -26,6 +26,7 @@ const CloudinaryImage = (resource: ImageData) => {
                     src={resource.public_id}
                     width={700}
                     height={700}
+                    quality={80}
                     className="rounded-lg"
                     alt={resource.public_id}
                     onClick={() => setIsDialogOpen(true)}
@@ -38,7 +39,7 @@ const CloudinaryImage = (resource: ImageData) => {
                     height={700}
                     width={700}
                     alt={resource.public_id}
-                    quality={80}
+                    quality={100}
                     onClick={() => setIsDialogOpen(true)}
                     onLoad={() => setIsImageLoaded(true)}
                     className={`rounded-lg w-auto max-h-[90vh] ${isImageLoaded ? '' : 'opacity-0 absolute'}`}

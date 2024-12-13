@@ -12,13 +12,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AlbumPage() {
     const [albums, setAlbums] = useState<CollectionData>({ folders: [] });
+    const [loading, setLoading] = useState(true);
 
     const pathname = usePathname();
     const collection_name = pathname.split('/').filter(Boolean).map(decodeURIComponent)[0];
 
     const fetchAlbums = () => {
         axios.get(`/api/collection/get?collection_name=${collection_name}`)
-            .then(response => setAlbums(response.data))
+            .then(response => {setAlbums(response.data);setLoading(false);});
+        
     };
 
     useEffect(() => {
@@ -29,10 +31,10 @@ export default function AlbumPage() {
         <div className="flex flex-col flex-1 gap-4">
             <div className="flex w-full justify-between items-start">
                 <h1 className="text-4xl font-bold">{collection_name}</h1>
-                <AddAlbumButton collection_name={collection_name} />
+                <AddAlbumButton collectionName={collection_name} />
             </div>
             <h2 className="text-2xl font-bold">Albums</h2>
-            {albums.folders.length === 0 ?
+            {loading ?
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {Array.from({ length: 5 }).map((_, resourceIdx) => (
                     <Skeleton key={resourceIdx} className="w-full h-[40px] rounded-lg" />

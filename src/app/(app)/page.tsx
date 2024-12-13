@@ -10,7 +10,7 @@ export default async function Home() {
   const folders = await cloudinary.api.sub_folders('');
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1 gap-4 sm:px-20">
       <Image className='self-center' src={"/imaginary.png"} height={800} width={800} alt='Logo Imaginary' />
       <h2 className="text-2xl font-bold">Pages</h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

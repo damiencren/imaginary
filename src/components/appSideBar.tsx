@@ -18,13 +18,16 @@ import {
 } from "@/components/ui/sidebar"
 import AddCollectionDialog from "./addCollectionButton";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import { BadgeInfo, BookUser, Calendar, Camera, ChevronDown, ChevronUp, Folder, Heading, Home, HomeIcon, Info, Paperclip, PersonStanding, PersonStandingIcon, Plus, Presentation, User, User2, UserCheck, UserCircle } from "lucide-react";
+import { BadgeInfo, BookUser, Calendar, Camera, ChevronDown, ChevronUp, Folder, Heading, Home, HomeIcon, Info, LogIn, LogOut, Paperclip, PersonStanding, PersonStandingIcon, Plus, Presentation, User, User2, UserCheck, UserCircle } from "lucide-react";
 import { TreeItemData } from "@/app/types/imageData";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from 'axios';
 import Image from "next/image";
 import AddAlbumMenuAction from "./addAlbumMenuAction";
+import { DropdownMenu, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const AppSideBar = () => {
     const [data, setData] = useState<TreeItemData[]>([]);
@@ -34,6 +37,9 @@ const AppSideBar = () => {
             .then(response => setData(response.data))
             .catch(error => console.error('Error fetching tree data:', error));
     };
+
+
+    const { data: session } = useSession();
 
     useEffect(() => {
         fetchData();
@@ -116,7 +122,7 @@ const AppSideBar = () => {
                                                 ))}
                                             </SidebarMenuSub>
                                         </CollapsibleContent>
-                                        <AddAlbumMenuAction collection_name={item.name} />
+                                        <AddAlbumMenuAction collectionName={item.name} />
                                     </SidebarMenuItem>
                                 </Collapsible>
                             ))}
@@ -126,6 +132,38 @@ const AppSideBar = () => {
 
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <SidebarMenuButton>
+                                    <User2 /> Account
+                                    <ChevronUp className="ml-auto" />
+                                </SidebarMenuButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent side="top" className="w-60 border-2">
+                                <DropdownMenuLabel>{session?.user?.name || "Guest"}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    {!session &&
+                                        <DropdownMenuItem onClick={() => signIn("google")}>
+                                            <LogIn />
+                                            <span>Log in</span>
+                                        </DropdownMenuItem>
+                                    }
+                                    {session &&
+                                        <DropdownMenuItem onClick={() => signOut()}>
+                                            <LogOut />
+                                            <span>Sign out</span>
+                                        </DropdownMenuItem>
+                                    }
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
     );
 }
