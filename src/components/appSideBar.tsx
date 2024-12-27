@@ -38,7 +38,6 @@ const AppSideBar = () => {
             .catch(error => console.error('Error fetching tree data:', error));
     };
 
-
     const { data: session } = useSession();
 
     useEffect(() => {
@@ -92,7 +91,7 @@ const AppSideBar = () => {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <AddCollectionDialog className="w-full h-8 justify-start rounded-lg" />
+                                {session && <AddCollectionDialog className="w-full h-8 justify-start rounded-lg" />}
                             </SidebarMenuItem>
 
                             {data.map((item: TreeItemData) => (

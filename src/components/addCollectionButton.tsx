@@ -5,11 +5,15 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Plus } from "lucide-react";
+import { useSession } from "next-auth/react";
+
 
 const AddCollectionButton = ({ className}: { className?: string }) => {
     const [error, setError] = useState("");
     const [collectionNameState, setCollectionNameState] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const { data: session } = useSession();
 
     const addCollection = async (collectionName: string) => {
         try {
@@ -46,6 +50,9 @@ const AddCollectionButton = ({ className}: { className?: string }) => {
         }
     };
 
+    if (!session) {
+        return null;
+    }
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
