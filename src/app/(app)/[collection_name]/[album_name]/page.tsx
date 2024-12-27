@@ -1,12 +1,11 @@
 "use client"
 import ImageGrid from '@/components/imageGrid';
 import ImportButton from '@/components/importButton';
-import { ImageData, TreeItemData } from '@/app/types/imageData';
+import { ImageData } from '@/app/types/imageData';
 import { useEffect, useState } from 'react';
-import { signIn, signOut, useSession } from "next-auth/react"
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from "next-auth/react"
+import { usePathname } from 'next/navigation';
 import axios from 'axios';
-import { LogIn, LogOut } from 'lucide-react';
 import SkeletonImageGrid from '@/components/skeletonImageGrid';
 
 const AlbumPage = () => {

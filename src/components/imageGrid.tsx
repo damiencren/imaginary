@@ -1,4 +1,3 @@
-"use client";
 import { ImageData } from "@/app/types/imageData";
 import { useEffect, useState } from "react";
 import CloudinaryImage from "./cloudinaryImage";
