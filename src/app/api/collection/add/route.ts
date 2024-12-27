@@ -11,11 +11,9 @@ export async function POST(request: NextRequest) {
   const { collectionName } = await request.json();
 
   const session = await getServerSession(authOptions);
-
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-
 
   const url = `https://${apiKey}:${apiSecret}@api.cloudinary.com/v1_1/${cloudName}/folders/${collectionName}`;
 
