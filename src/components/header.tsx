@@ -52,7 +52,7 @@ const Header = () => {
                 </BreadcrumbList>
             </Breadcrumb>
             <Avatar className="ml-auto">
-            <AvatarImage src={session?.user?.image ?? "https://www.gravatar.com/avatar/"} />
+            {session && <AvatarImage src={session?.user?.image ?? undefined} />}
             <AvatarFallback></AvatarFallback>
             </Avatar>
         </div>
