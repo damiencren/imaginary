@@ -13,7 +13,8 @@ const CloudinaryImage = (resource: ImageData) => {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     async function DownloadImage(url: string) {
-        const response = await axios.get(url, { responseType: 'blob' });
+        const secureUrl = url.replace(/^http:\/\//i, 'https://');
+        const response = await axios.get(secureUrl, { responseType: 'blob' });
         const blob = new Blob([response.data], { type: 'image/jpeg' });
         saveAs(blob, 'photo.jpeg');
     }
